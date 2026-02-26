@@ -68,4 +68,49 @@ public class MainActivityTest {
         )).atPosition(0).check(matches((withText("Edmonton"))));
 
     }
+    @Test
+    public void testActivitySwitch() {
+        // 1. Add a city first
+        onView(withId(R.id.button_add)).perform(click());
+        onView(withId(R.id.editText_name)).perform(ViewActions.typeText("Edmonton"));
+        onView(withId(R.id.button_confirm)).perform(click());
+
+        // 2. Click the city in the ListView
+        onData(anything()).inAdapterView(withId(R.id.city_list)).atPosition(0).perform(click());
+
+        // 3. CHECK: Does the ShowActivity view exist?
+        // We check if the unique TextView of ShowActivity is displayed.
+        onView(withId(R.id.cityTextView)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testCityNameConsistency() {
+        // 1. Add a specific city
+        onView(withId(R.id.button_add)).perform(click());
+        onView(withId(R.id.editText_name)).perform(ViewActions.typeText("Calgary"));
+        onView(withId(R.id.button_confirm)).perform(click());
+
+        // 2. Click it
+        onData(anything()).inAdapterView(withId(R.id.city_list)).atPosition(0).perform(click());
+
+        // 3. CHECK: Is the text in ShowActivity exactly "Calgary"?
+        onView(withId(R.id.cityTextView)).check(matches(withText("Calgary")));
+    }
+
+    @Test
+    public void testBackButton() {
+        onView(withId(R.id.button_add)).perform(click());
+        onView(withId(R.id.editText_name))
+                .perform(ViewActions.typeText("Edmonton"), ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.button_confirm)).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.city_list))
+                .atPosition(0)
+                .perform(click());
+
+        androidx.test.espresso.Espresso.pressBack();
+
+        onView(withId(R.id.button_add)).check(matches(isDisplayed()));
+    }
 }

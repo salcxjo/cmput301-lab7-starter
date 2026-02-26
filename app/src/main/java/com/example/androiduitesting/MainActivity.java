@@ -2,8 +2,10 @@ package com.example.androiduitesting;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +42,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         cityList.setAdapter(cityAdapter);
+
+        //with help from Gemini
+        //how do I pass the city name to the next activity? - Feb 26, 2026
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // 1. Get the name of the city that was clicked
+                String selectedCity = dataList.get(position);
+
+                // 2. Create an Intent to go to ShowActivity
+                Intent intent = new Intent(MainActivity.this, ShowActivity.class);
+
+                // 3. Pass the city name to the next activity
+                intent.putExtra("CITY_NAME", selectedCity);
+
+                // 4. Start the activity
+                startActivity(intent);
+            }
+        });
 
         final Button addButton = findViewById(R.id.button_add);
         addButton.setOnClickListener(new View.OnClickListener() {
